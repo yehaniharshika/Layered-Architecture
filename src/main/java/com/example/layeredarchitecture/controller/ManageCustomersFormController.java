@@ -190,6 +190,7 @@ public class ManageCustomersFormController {
 //                pstm.setString(2, address);
 //                pstm.setString(3, id);
 //                pstm.executeUpdate();
+                 boolean isUpdated = customerDAO.updateCustomer(dto);
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
             } catch (ClassNotFoundException e) {
