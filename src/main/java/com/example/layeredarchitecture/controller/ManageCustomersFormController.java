@@ -154,7 +154,8 @@ public class ManageCustomersFormController {
         if (btnSave.getText().equalsIgnoreCase("save")) {
             /*Save Customer*/
             try {
-                if (existCustomer(id)) {
+                boolean isExit = customerDAO.exitCustomer(id);
+                if (isExit) {
                     //check id that already exist
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
@@ -181,7 +182,7 @@ public class ManageCustomersFormController {
         } else {
             /*Update customer*/
             try {
-                if (!existCustomer(id)) {
+                if (!customerDAO.exitCustomer(id)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
 
@@ -203,25 +204,22 @@ public class ManageCustomersFormController {
     }
 
 
-    boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
-        Connection connection = DBConnection.getDbConnection().getConnection();
-        PreparedStatement pstm = connection.prepareStatement("SELECT id FROM Customer WHERE id=?");
-        pstm.setString(1, id);
-        return pstm.executeQuery().next();
-    }
+//    boolean existCustomer(String id) throws SQLException, ClassNotFoundException {
+//        Connection connection = DBConnection.getDbConnection().getConnection();
+//        PreparedStatement pstm = connection.prepareStatement("SELECT id FROM Customer WHERE id=?");
+//        pstm.setString(1, id);
+//        return pstm.executeQuery().next();
+//    }
 
 
     public void btnDelete_OnAction(ActionEvent actionEvent) {
         /*Delete Customer*/
         String id = tblCustomers.getSelectionModel().getSelectedItem().getId();
         try {
-            if (!existCustomer(id)) {
+            if (!customerDAO.exitCustomer(id)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
-//            Connection connection = DBConnection.getDbConnection().getConnection();
-//            PreparedStatement pstm = connection.prepareStatement("DELETE FROM Customer WHERE id=?");
-//            pstm.setString(1, id);
-//            pstm.executeUpdate();
+
             boolean isDeleted = customerDAO.deleteCustomer(id);
             if (isDeleted){
                 tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
@@ -237,37 +235,24 @@ public class ManageCustomersFormController {
     }
 
     private String generateNewId() {
+        String id = null;
+
         try {
-            Connection connection = DBConnection.getDbConnection().getConnection();
-            ResultSet rst = connection.createStatement().executeQuery("SELECT id FROM Customer ORDER BY id DESC LIMIT 1;");
-            if (rst.next()) {
-                String id = rst.getString("id");
-                int newCustomerId = Integer.parseInt(id.replace("C00-", "")) + 1;
-                return String.format("C00-%03d", newCustomerId);
-            } else {
-                return "C00-001";
-            }
+            id = customerDAO.generateNextCustomerId(id);
+
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
-
-        if (tblCustomers.getItems().isEmpty()) {
-            return "C00-001";
-        } else {
-            String id = getLastCustomerId();
-            int newCustomerId = Integer.parseInt(id.replace("C", "")) + 1;
-            return String.format("C00-%03d", newCustomerId);
-        }
-
+        return id;
     }
 
-    private String getLastCustomerId() {
-        List<CustomerTM> tempCustomersList = new ArrayList<>(tblCustomers.getItems());
-        Collections.sort(tempCustomersList);
-        return tempCustomersList.get(tempCustomersList.size() - 1).getId();
-    }
+//    private String getLastCustomerId() {
+//        List<CustomerTM> tempCustomersList = new ArrayList<>(tblCustomers.getItems());
+//        Collections.sort(tempCustomersList);
+//        return tempCustomersList.get(tempCustomersList.size() - 1).getId();
+//    }
 
 }
