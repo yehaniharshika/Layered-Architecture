@@ -1,5 +1,6 @@
 package com.example.layeredarchitecture.controller;
 
+import com.example.layeredarchitecture.dao.CustomerDAO;
 import com.example.layeredarchitecture.dao.CustomerDAOImpl;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
@@ -37,8 +38,8 @@ public class ManageCustomersFormController {
     public TextField txtCustomerAddress;
     public TableView<CustomerTM> tblCustomers;
     public JFXButton btnAddNewCustomer;
+    CustomerDAO customerDAO = new CustomerDAOImpl(); //this is property Injection
 
-    private CustomerDAOImpl customerDAO = new CustomerDAOImpl();
 
     public void initialize() {
         tblCustomers.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -72,7 +73,7 @@ public class ManageCustomersFormController {
         /*Get all customers*/
         try {
 
-            CustomerDAOImpl customerDAO = new CustomerDAOImpl();
+
             ArrayList<CustomerDTO> allCustomer = customerDAO.getAllCustomer();
 
             for (CustomerDTO dto : allCustomer){
@@ -154,6 +155,7 @@ public class ManageCustomersFormController {
         if (btnSave.getText().equalsIgnoreCase("save")) {
             /*Save Customer*/
             try {
+
                 boolean isExit = customerDAO.exitCustomer(id);
                 if (isExit) {
                     //check id that already exist
@@ -182,6 +184,7 @@ public class ManageCustomersFormController {
         } else {
             /*Update customer*/
             try {
+
                 if (!customerDAO.exitCustomer(id)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
@@ -216,6 +219,7 @@ public class ManageCustomersFormController {
         /*Delete Customer*/
         String id = tblCustomers.getSelectionModel().getSelectedItem().getId();
         try {
+
             if (!customerDAO.exitCustomer(id)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
@@ -238,6 +242,7 @@ public class ManageCustomersFormController {
         String id = null;
 
         try {
+
             id = customerDAO.generateNextCustomerId(id);
 
         } catch (SQLException e) {

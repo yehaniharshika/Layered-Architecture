@@ -1,5 +1,6 @@
 package com.example.layeredarchitecture.controller;
 
+import com.example.layeredarchitecture.dao.ItemDAO;
 import com.example.layeredarchitecture.dao.ItemDAOImpl;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.ItemDTO;
@@ -36,8 +37,7 @@ public class ManageItemsFormController {
     public TableView<ItemTM> tblItems;
     public TextField txtUnitPrice;
     public JFXButton btnAddNewItem;
-    private ItemDAOImpl itemDAO = new ItemDAOImpl();
-
+    ItemDAO itemDAO = new ItemDAOImpl();//this is property Injection
     public void initialize() {
         tblItems.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("code"));
         tblItems.getColumns().get(1).setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -72,6 +72,7 @@ public class ManageItemsFormController {
     private void loadAllItems() {
         tblItems.getItems().clear();
         try {
+
             ArrayList<ItemDTO> allItem = itemDAO.getAllItems();
 
             for (ItemDTO dto : allItem){
@@ -136,10 +137,12 @@ public class ManageItemsFormController {
         /*Delete Item*/
         String code = tblItems.getSelectionModel().getSelectedItem().getCode();
         try {
+
             if (!itemDAO.existItem(code)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such item associated with the id " + code).show();
             }
 
+            itemDAO = new ItemDAOImpl();
             boolean isDeleted = itemDAO.deleteItem(code);
             if(isDeleted){
                 tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
@@ -182,11 +185,12 @@ public class ManageItemsFormController {
 
         if (btnSave.getText().equalsIgnoreCase("save")) {
             try {
+
                 if (itemDAO.existItem(code)) {
                     new Alert(Alert.AlertType.ERROR, code + " already exists").show();
                 }
-                //Save Item
 
+                //Save Item
                 boolean isSaved = itemDAO.saveItem(dto);
                 if (isSaved){
                     tblItems.getItems().add(new ItemTM(code, description, unitPrice, qtyOnHand));
@@ -200,7 +204,6 @@ public class ManageItemsFormController {
             }
         } else {
             try {
-
                 if (!itemDAO.existItem(code)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such item associated with the id " + code).show();
                 }
@@ -228,6 +231,7 @@ public class ManageItemsFormController {
     private String generateNewId() {
         String code = null;
         try {
+
             code = itemDAO.generateNextItemCode(code);
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, e.getMessage()).show();
