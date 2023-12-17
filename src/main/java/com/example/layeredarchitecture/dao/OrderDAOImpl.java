@@ -2,12 +2,15 @@ package com.example.layeredarchitecture.dao;
 
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.OrderDTO;
+import com.example.layeredarchitecture.model.OrderDetailDTO;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.List;
 
-public class OrderDAOImpl {
+public class OrderDAOImpl implements  OrderDAO{
 
+    @Override
     public String generateNextOrderId(String orderId) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
         Statement stm = connection.createStatement();
@@ -18,6 +21,7 @@ public class OrderDAOImpl {
 
 
     //exit Orders
+    @Override
     public  boolean exitOrders(String orderId) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
         PreparedStatement stm = connection.prepareStatement("SELECT oid FROM `Orders` WHERE oid=?");
@@ -26,17 +30,32 @@ public class OrderDAOImpl {
         return stm.executeQuery().next();
     }
 
-
-    public boolean saveOrder(String orderId, LocalDate orderDate, String customerId) throws SQLException, ClassNotFoundException {
+    @Override
+    public boolean saveOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
+        PreparedStatement stm;
 
-        PreparedStatement stm = connection.prepareStatement("INSERT INTO `Orders` (oid, date, customerID) VALUES (?,?,?)");
+        connection.setAutoCommit(false);
+        stm = connection.prepareStatement("INSERT INTO `Orders` (oid, date, customerID) VALUES (?,?,?)");
         stm.setString(1, orderId);
         stm.setDate(2, Date.valueOf(orderDate));
         stm.setString(3, customerId);
 
-        boolean isOrderSaved = stm.executeUpdate() > 0;
+        if (stm.executeUpdate() != 1) {
+            connection.rollback();
+            connection.setAutoCommit(true);
+            return false;
+        }
 
-        return isOrderSaved;
+        OrderDetailDAOImpl orderDetailDAO = new OrderDetailDAOImpl();
+        boolean isOrderDetailSaved = orderDetailDAO.saveOrderDetails(orderId,orderDetails);
+
+        if (!isOrderDetailSaved) {
+            connection.rollback();
+            connection.setAutoCommit(true);
+            return true;
+        }
+
+        return false;
     }
 }

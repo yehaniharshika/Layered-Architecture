@@ -3,9 +3,11 @@ package com.example.layeredarchitecture.dao;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.model.ItemDTO;
+import com.example.layeredarchitecture.view.tdm.OrderDetailTM;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemDAOImpl  implements ItemDAO{
 
@@ -55,6 +57,26 @@ public class ItemDAOImpl  implements ItemDAO{
         return isUpdated;
     }
 
+    /*public boolean updateItems(List<OrderDetailTM> orderDetailTMList) throws SQLException, ClassNotFoundException {
+        for (OrderDetailTM tm : orderDetailTMList){
+            if(!updateQty(tm.getCode(),tm.getQty())){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean updateQty(String code, int qty) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getDbConnection().getConnection();
+        String sql ="UPDATE Item SET qtyOnHand = qtyOnHand - ? WHERE code = ?";
+        PreparedStatement pstm = connection.prepareStatement(sql);
+
+        pstm.setInt(1,qty);
+        pstm.setString(2,code);
+
+        return  pstm.executeUpdate() > 0;
+    }*/
+
     @Override
     public boolean deleteItem(String code) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
@@ -72,6 +94,7 @@ public class ItemDAOImpl  implements ItemDAO{
         return pstm.executeQuery().next();
     }
 
+    //search Item
     @Override
     public ItemDTO searchItem(String newItemCode) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
