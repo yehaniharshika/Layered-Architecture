@@ -50,7 +50,7 @@ public class OrderDAOImpl implements  OrderDAO{
         OrderDetailDAOImpl orderDetailDAO = new OrderDetailDAOImpl();
         boolean isOrderDetailSaved = orderDetailDAO.saveOrderDetails(orderId,orderDetails);
 
-        if (!isOrderDetailSaved) {
+        if (isOrderDetailSaved) {
             connection.rollback();
             connection.setAutoCommit(true);
             return true;
