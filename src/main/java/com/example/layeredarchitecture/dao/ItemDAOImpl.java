@@ -73,6 +73,24 @@ public class ItemDAOImpl  implements ItemDAO{
     }
 
     @Override
+    public ItemDTO searchItem(String newItemCode) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getDbConnection().getConnection();
+        PreparedStatement pstm = connection.prepareStatement("SELECT * FROM Item WHERE code=?");
+        pstm.setString(1, newItemCode);
+        ResultSet rst = pstm.executeQuery();
+        ItemDTO item = null;
+        if (rst.next()){
+            item= new ItemDTO(newItemCode + "",
+                    rst.getString("description"),
+                    rst.getBigDecimal("unitPrice"),
+                    rst.getInt("qtyOnHand"));
+
+        }
+        return item;
+    }
+
+
+    @Override
     public String generateNextItemCode(String code) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
         ResultSet rst = connection.createStatement().executeQuery("SELECT code FROM Item ORDER BY code DESC LIMIT 1;");

@@ -19,5 +19,7 @@ public interface CustomerDAO {
 
      String generateNextCustomerId(String id) throws SQLException, ClassNotFoundException;
 
+     CustomerDTO searchCustomer(String id) throws SQLException, ClassNotFoundException;
+
 
 }

@@ -19,5 +19,8 @@ public interface ItemDAO {
 
    String generateNextItemCode(String code) throws SQLException, ClassNotFoundException ;
 
+   ItemDTO searchItem(String newItemCode) throws SQLException, ClassNotFoundException;
+
+
 
 }
