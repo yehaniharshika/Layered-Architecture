@@ -27,7 +27,8 @@ public class OrderDAOImpl implements  OrderDAO{
         PreparedStatement stm = connection.prepareStatement("SELECT oid FROM `Orders` WHERE oid=?");
         stm.setString(1, orderId);
 
-        return stm.executeQuery().next();
+        boolean isExist = stm.executeQuery().next();
+        return isExist;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class OrderDAOImpl implements  OrderDAO{
         OrderDetailDAOImpl orderDetailDAO = new OrderDetailDAOImpl();
         boolean isOrderDetailSaved = orderDetailDAO.saveOrderDetails(orderId,orderDetails);
 
-        if (isOrderDetailSaved) {
+        if (!isOrderDetailSaved) {
             connection.rollback();
             connection.setAutoCommit(true);
             return true;

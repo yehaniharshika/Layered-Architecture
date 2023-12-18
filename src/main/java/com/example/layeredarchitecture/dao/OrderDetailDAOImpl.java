@@ -52,8 +52,8 @@ public class OrderDetailDAOImpl implements OrderDetailDAO{
             }
         }
 
-//        connection.commit();
-//        connection.setAutoCommit(true);
+        connection.commit();
+        connection.setAutoCommit(true);
         return true;
     }
 }

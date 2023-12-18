@@ -387,7 +387,7 @@ public class PlaceOrderFormController {
             //OrderDAOImpl orderDAO = new OrderDAOImpl();
             boolean isExist  = orderDAO.exitOrders(orderId);
             if(isExist){
-                return  false;
+                //return  false;
             }
 
 
@@ -443,7 +443,7 @@ public class PlaceOrderFormController {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     //find(Search item)
