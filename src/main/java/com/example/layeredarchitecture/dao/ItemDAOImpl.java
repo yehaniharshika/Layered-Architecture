@@ -3,6 +3,7 @@ package com.example.layeredarchitecture.dao;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.model.ItemDTO;
+import com.example.layeredarchitecture.model.OrderDetailDTO;
 import com.example.layeredarchitecture.view.tdm.OrderDetailTM;
 
 import java.sql.*;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemDAOImpl  implements ItemDAO{
+
+    private ItemDAOImpl itemDAO;
 
     @Override
     public  ArrayList<ItemDTO> getAllItems() throws SQLException, ClassNotFoundException {
@@ -124,6 +127,19 @@ public class ItemDAOImpl  implements ItemDAO{
         } else {
             return "I00-001";
         }
+    }
+
+    public  boolean updateItemQuantity(ItemDTO item, OrderDetailDTO detail) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getDbConnection().getConnection();
+        item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
+        boolean isUpdated = itemDAO.updateItem(item);
+        if (!isUpdated){
+            connection.rollback();
+            connection.setAutoCommit(true);
+            return false;
+        }
+
+        return isUpdated;
     }
 
 

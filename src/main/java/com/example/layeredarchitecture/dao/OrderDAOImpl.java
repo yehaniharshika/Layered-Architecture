@@ -32,8 +32,15 @@ public class OrderDAOImpl implements  OrderDAO{
     }
 
     @Override
-    public boolean saveOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) throws SQLException, ClassNotFoundException {
+    public boolean saveOrder(OrderDTO dto) throws SQLException, ClassNotFoundException {
         Connection connection = DBConnection.getDbConnection().getConnection();
+        PreparedStatement stm = connection.prepareStatement("INSERT INTO `Orders` (oid, date, customerID) VALUES (?,?,?)");
+        stm.setString(1, dto.getOrderId());
+        System.out.println("date: "+dto.getOrderDate());
+        stm.setDate(2, Date.valueOf(dto.getOrderDate()));
+        stm.setString(3, dto.getCustomerId());
+        return stm.executeUpdate()>0;
+        /*Connection connection = DBConnection.getDbConnection().getConnection();
         PreparedStatement stm;
 
         connection.setAutoCommit(false);
@@ -57,6 +64,6 @@ public class OrderDAOImpl implements  OrderDAO{
             return true;
         }
 
-        return false;
+        return false;*/
     }
 }

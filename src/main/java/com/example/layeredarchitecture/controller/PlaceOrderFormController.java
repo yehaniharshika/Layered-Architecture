@@ -4,6 +4,7 @@ import com.example.layeredarchitecture.dao.*;
 import com.example.layeredarchitecture.db.DBConnection;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.model.ItemDTO;
+import com.example.layeredarchitecture.model.OrderDTO;
 import com.example.layeredarchitecture.model.OrderDetailDTO;
 import com.example.layeredarchitecture.view.tdm.OrderDetailTM;
 import com.jfoenix.controls.JFXButton;
@@ -374,34 +375,59 @@ public class PlaceOrderFormController {
 
     public boolean saveOrder(String orderId, LocalDate orderDate, String customerId, List<OrderDetailDTO> orderDetails) {
         /*Transaction*/
+        Connection connection = null;
 
         try {
-           /* connection = DBConnection.getDbConnection().getConnection();
-            PreparedStatement stm = connection.prepareStatement("SELECT oid FROM `Orders` WHERE oid=?");
-            stm.setString(1, orderId);
-            */
-            /*if order id already exist*/
-//            if (stm.executeQuery().next()) {
-//
-//            }
-            //OrderDAOImpl orderDAO = new OrderDAOImpl();
+            connection = DBConnection.getDbConnection().getConnection();
+
             boolean isExist  = orderDAO.exitOrders(orderId);
             if(isExist){
-                //return  false;
+                return  false;
             }
+            connection.setAutoCommit(false);
 
 
             //save order
-            boolean isSaved = orderDAO.saveOrder(orderId,orderDate,customerId,orderDetails);
+            boolean isSaved = orderDAO.saveOrder(new OrderDTO(orderId,orderDate,customerId));
+            System.out.println("orderDate:"+orderDate);
 //            connection.setAutoCommit(false);
 //            stm = connection.prepareStatement("INSERT INTO `Orders` (oid, date, customerID) VALUES (?,?,?)");
 //            stm.setString(1, orderId);
 //            stm.setDate(2, Date.valueOf(orderDate));
 //            stm.setString(3, customerId);
 
-            if (isSaved) {
-                return true;
+            if (!isSaved) {
+                connection.rollback();
+                connection.setAutoCommit(true);
+                return false;
             }
+
+            for (OrderDetailDTO detail : orderDetails) {
+                boolean isOrderDetailSaved = orderDetailDAO.saveOrderDetails(orderId,detail);
+
+                if (!isOrderDetailSaved){
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    return  false;
+                }
+
+                //search item
+                ItemDTO item = findItem(detail.getItemCode());
+                item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
+
+
+                //update item
+                boolean isUpdated = itemDAO.updateItem(new ItemDTO(item.getCode(),item.getDescription(),item.getUnitPrice(),item.getQtyOnHand()));
+                if (!isUpdated){
+                    connection.rollback();
+                    connection.setAutoCommit(true);
+                    return false;
+                }
+            }
+
+            connection.commit();
+            connection.setAutoCommit(true);
+            return true;
 
             /*stm = connection.prepareStatement("INSERT INTO OrderDetails (oid, itemCode, unitPrice, qty) VALUES (?,?,?,?)");
 
@@ -444,6 +470,16 @@ public class PlaceOrderFormController {
             e.printStackTrace();
         }
         return true;
+    }
+
+    private ItemDTO findItem(String code) {
+        try {
+            return itemDAO.searchItem(code);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     //find(Search item)
