@@ -32,11 +32,11 @@ public class OrderDetailDAOImpl implements OrderDetailDAO{
 
 
             ItemDAOImpl itemDAO = new ItemDAOImpl();
-                //Search & Update Item
+                //Search Item
             ItemDTO item = itemDAO.searchItem(detail.getItemCode());
             item.setQtyOnHand(item.getQtyOnHand() - detail.getQty());
 
-
+            //update Item
             boolean isUpdated = itemDAO.updateItem(item);
 
            /* PreparedStatement pstm = connection.prepareStatement("UPDATE Item SET description=?, unitPrice=?, qtyOnHand=? WHERE code=?");
