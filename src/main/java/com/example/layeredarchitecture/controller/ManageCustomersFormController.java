@@ -1,8 +1,7 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.CustomerDAO;
-import com.example.layeredarchitecture.dao.CustomerDAOImpl;
-import com.example.layeredarchitecture.db.DBConnection;
+import com.example.layeredarchitecture.dao.custom.CustomerDAO;
+import com.example.layeredarchitecture.dao.custom.Impl.CustomerDAOImpl;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.view.tdm.CustomerTM;
 import com.jfoenix.controls.JFXButton;
@@ -24,9 +23,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 
 
 public class ManageCustomersFormController {
@@ -73,7 +69,7 @@ public class ManageCustomersFormController {
         /*Get all customers*/
         try {
 
-            ArrayList<CustomerDTO> allCustomer = customerDAO.getAllCustomer();
+            ArrayList<CustomerDTO> allCustomer = (ArrayList<CustomerDTO>) customerDAO.getAll();
 
             for (CustomerDTO dto : allCustomer){
                  tblCustomers.getItems().add(new CustomerTM(
@@ -155,13 +151,13 @@ public class ManageCustomersFormController {
             /*Save Customer*/
             try {
 
-                boolean isExit = customerDAO.exitCustomer(id);
+                boolean isExit = customerDAO.exit(id);
                 if (isExit) {
                     //check id that already exist
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
 
-                boolean isSaved =  customerDAO.saveCustomer(dto);
+                boolean isSaved =  customerDAO.save(dto);
                 if (isSaved){
                     tblCustomers.getItems().add(new CustomerTM(id, name, address));
                 }
@@ -184,11 +180,11 @@ public class ManageCustomersFormController {
             /*Update customer*/
             try {
 
-                if (!customerDAO.exitCustomer(id)) {
+                if (!customerDAO.exit(id)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
 
-                 boolean isUpdated = customerDAO.updateCustomer(dto);
+                 boolean isUpdated = customerDAO.update(dto);
 
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -219,11 +215,11 @@ public class ManageCustomersFormController {
         String id = tblCustomers.getSelectionModel().getSelectedItem().getId();
         try {
 
-            if (!customerDAO.exitCustomer(id)) {
+            if (!customerDAO.exit(id)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
 
-            boolean isDeleted = customerDAO.deleteCustomer(id);
+            boolean isDeleted = customerDAO.delete(id);
             if (isDeleted){
                 tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
                 tblCustomers.getSelectionModel().clearSelection();
@@ -242,7 +238,7 @@ public class ManageCustomersFormController {
 
         try {
 
-            id = customerDAO.generateNextCustomerId(id);
+            id = customerDAO.generateNewId(id);
 
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();
