@@ -8,90 +8,79 @@ public class ViewOrderDetailTM {
     private  String name;
     private String oid;
     private String date;
-    private String itemcode;
+    private String itemCode;
     //private String description;
     private int qty;
-    private BigDecimal unitprice;
+    private BigDecimal unitPrice;
 
-    public ViewOrderDetailTM(String id, String name, String oid, String date, String itemcode, String qty, String unitprice){
+    public  ViewOrderDetailTM(){
 
     }
 
-    public ViewOrderDetailTM(String id,String name,String oid,String date,String itemCode,int qty,BigDecimal unitprice){
+    public ViewOrderDetailTM(String id, String name, String oid, String date, String itemCode, int qty, BigDecimal unitPrice) {
         this.id = id;
-        this.name =  name;
-        this.oid = oid;
-        this.date = date;
-        this.itemcode = itemCode;
-        //this.description= description;
-        this.qty = qty;
-        this.unitprice = unitprice;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public void setOid(String oid) {
         this.oid = oid;
-    }
-
-    public void setDate(String date) {
         this.date = date;
-    }
-
-
-    public void setItemcode(String itemcode) {
-        this.itemcode = itemcode;
-    }
-
-
-   /* public void setDescription(String description) {
-        this.description = description;
-    }*/
-
-    public void setQty(int qty) {
+        this.itemCode = itemCode;
         this.qty = qty;
-    }
-
-    public void setUnitprice(BigDecimal unitprice) {
-        this.unitprice = unitprice;
+        this.unitPrice = unitPrice;
     }
 
     public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getOid() {
         return oid;
     }
 
-    /*public String getDescription() {
-        return description;
-    }*/
+    public void setOid(String oid) {
+        this.oid = oid;
+    }
 
     public String getDate() {
         return date;
     }
 
-    public String getItemcode() {
-        return itemcode;
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 
     public int getQty() {
         return qty;
     }
 
-    public BigDecimal getUnitprice() {
-        return unitprice;
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public BigDecimal getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     @Override
@@ -101,9 +90,9 @@ public class ViewOrderDetailTM {
                 ", name='" + name + '\'' +
                 ", oid='" + oid + '\'' +
                 ", date='" + date + '\'' +
-                ", itemcode='" + itemcode + '\'' +
+                ", itemCode='" + itemCode + '\'' +
                 ", qty=" + qty +
-                ", unitprice=" + unitprice +
+                ", unitPrice=" + unitPrice +
                 '}';
     }
 }

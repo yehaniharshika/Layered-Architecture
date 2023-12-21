@@ -7,6 +7,7 @@ import com.example.layeredarchitecture.model.OrderDetailDTO;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAOImpl implements OrderDAO {
@@ -100,7 +101,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public List<OrderDTO> getAll() throws SQLException, ClassNotFoundException {
+    public ArrayList<OrderDTO> getAll() throws SQLException, ClassNotFoundException {
         return null;
     }
 

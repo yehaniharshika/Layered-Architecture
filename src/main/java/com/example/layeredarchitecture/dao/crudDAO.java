@@ -3,12 +3,13 @@ package com.example.layeredarchitecture.dao;
 import com.example.layeredarchitecture.model.CustomerDTO;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface crudDAO<T> {
     boolean save(T dto) throws SQLException, ClassNotFoundException;
 
-    List<T> getAll() throws SQLException, ClassNotFoundException;
+    ArrayList<T> getAll() throws SQLException, ClassNotFoundException;
 
     boolean update(T dto) throws SQLException, ClassNotFoundException;
 

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class QueryDAOImpl implements QueryDAO {
     public ArrayList<ViewOrderDetailDTO> addTableAllCustomrOrderDetails(String id) throws ClassNotFoundException, SQLException {
 
-
         ArrayList<ViewOrderDetailDTO> getAllCustomerOrderDetails = new ArrayList<>();
 
         ResultSet rst = SQLUtil.execute("SELECT c.id,c.name,o.oid,o.date,od.itemCode,od.qty,od.unitPrice FROM Customer c JOIN Orders o ON c.id=o.customerID JOIN OrderDetails od ON o.oid = od.oid where c.id=?",id);
@@ -34,8 +33,8 @@ public class QueryDAOImpl implements QueryDAO {
                         rst.getString(3),
                         rst.getString(4),
                         rst.getString(5),
-                        rst.getString(6),
-                        rst.getString(7)
+                        rst.getInt(6),
+                        rst.getBigDecimal(7)
                 );
                 getAllCustomerOrderDetails.add(viewOrderDetailDTO);
             }

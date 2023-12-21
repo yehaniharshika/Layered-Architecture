@@ -2,9 +2,12 @@ package com.example.layeredarchitecture.controller;
 
 import com.example.layeredarchitecture.dao.custom.CustomerDAO;
 import com.example.layeredarchitecture.dao.custom.Impl.CustomerDAOImpl;
+import com.example.layeredarchitecture.dao.custom.Impl.OrderDAOImpl;
 import com.example.layeredarchitecture.dao.custom.Impl.QueryDAOImpl;
+import com.example.layeredarchitecture.dao.custom.OrderDAO;
 import com.example.layeredarchitecture.dao.custom.QueryDAO;
 import com.example.layeredarchitecture.model.CustomerDTO;
+import com.example.layeredarchitecture.model.OrderDTO;
 import com.example.layeredarchitecture.model.ViewOrderDetailDTO;
 import com.example.layeredarchitecture.view.tdm.ViewOrderDetailTM;
 import com.jfoenix.controls.JFXComboBox;
@@ -16,10 +19,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,13 @@ public class ViewOrdersFormController {
     private JFXComboBox<String> cmbCustomerId;
 
     @FXML
+    private JFXComboBox<String> cmbOrderId;
+
+    @FXML
     private TextField txtCustomerName;
+
+    @FXML
+    private Label lblDate;
 
     @FXML
     private AnchorPane root;
@@ -69,6 +76,8 @@ public class ViewOrdersFormController {
     CustomerDAO customerDAO = new CustomerDAOImpl();
     QueryDAO queryDAO = new QueryDAOImpl();
 
+    OrderDAO orderDAO = new OrderDAOImpl();
+
     @FXML
     void navigateToHome(MouseEvent event) throws IOException {
         URL resource = this.getClass().getResource("/com/example/layeredarchitecture/main-form.fxml");
@@ -81,8 +90,70 @@ public class ViewOrdersFormController {
 
     }
 
+   /* public void viewCustomerOrderDetail() throws SQLException, ClassNotFoundException {
+        String id = cmbCustomerId.getValue();
+        ArrayList<ViewOrderDetailDTO> dtoList = queryDAO.addTableAllCustomrOrderDetails(id);
+
+        for (ViewOrderDetailDTO dto: dtoList){
+            String customerId = dto.getId();
+
+            dto.getName(),
+            d
+        }
+
+    }
+*/
+   @FXML
+   void orderIDOnAction(ActionEvent event) {
+       String oid = cmbOrderId.getValue();
+       //txtCustomerName.setText();
+
+
+       ObservableList<ViewOrderDetailTM> obList = FXCollections.observableArrayList();
+       try {
+           tblViewCustomerOrderDetails.getItems().clear();
+           ArrayList<ViewOrderDetailDTO> dtoList = queryDAO.addTableAllCustomrOrderDetails(oid) ;
+
+           for (ViewOrderDetailDTO dto : dtoList){
+               txtCustomerName.setText(dto.getName());
+               obList.add(new ViewOrderDetailTM(
+                       dto.getId(),
+                       dto.getName(),
+                       dto.getOid(),
+                       dto.getDate(),
+                       dto.getItemcode(),
+                       dto.getQty(),
+                       dto.getUnitprice()
+               ));
+               for (ViewOrderDetailDTO test : dtoList) {
+
+                   System.out.println(test.getId());
+                   System.out.println(test.getName());
+                   System.out.println(test.getOid());
+                   System.out.println(test.getDate());
+                   System.out.println(test.getItemcode());
+                   System.out.println(test.getQty());
+                   System.out.println(test.getUnitprice());
+               }
+               tblViewCustomerOrderDetails.setItems(obList);
+               initialize();
+
+           }
+//            colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
+//            colCustomerName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//            colOrderId.setCellValueFactory(new PropertyValueFactory<>("oid"));
+//            colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+//            colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+//           colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+//           colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+
+   }
     @FXML
-    void customerIDOnAction(ActionEvent event) {
+    void customerIDOnAction(ActionEvent event){
         String id = cmbCustomerId.getValue();
         //txtCustomerName.setText();
 
@@ -93,6 +164,7 @@ public class ViewOrdersFormController {
             ArrayList<ViewOrderDetailDTO> dtoList = queryDAO.addTableAllCustomrOrderDetails(id) ;
 
             for (ViewOrderDetailDTO dto : dtoList){
+                txtCustomerName.setText(dto.getName());
                 obList.add(new ViewOrderDetailTM(
                         dto.getId(),
                         dto.getName(),
@@ -102,38 +174,32 @@ public class ViewOrdersFormController {
                         dto.getQty(),
                         dto.getUnitprice()
                 ));
+                for (ViewOrderDetailDTO test : dtoList) {
+
+                    System.out.println(test.getId());
+                    System.out.println(test.getName());
+                    System.out.println(test.getOid());
+                    System.out.println(test.getDate());
+                    System.out.println(test.getItemcode());
+                    System.out.println(test.getQty());
+                    System.out.println(test.getUnitprice());
+                }
                 tblViewCustomerOrderDetails.setItems(obList);
+                initialize();
 
             }
-            colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
-            colCustomerName.setCellValueFactory(new PropertyValueFactory<>("name"));
-            colOrderId.setCellValueFactory(new PropertyValueFactory<>("oid"));
-            colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
-            colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
-           colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
-           colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+//            colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
+//            colCustomerName.setCellValueFactory(new PropertyValueFactory<>("name"));
+//            colOrderId.setCellValueFactory(new PropertyValueFactory<>("oid"));
+//            colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+//            colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+//           colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+//           colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-           e.printStackTrace();
         }
     }
-
-
-    public  void initialize() throws SQLException, ClassNotFoundException {
-        loadAllCustomers();
-
-
-
-
-    }
-
-   /* private void setCellValueFactory() {
-
-    }
-*/
-
 
     private void loadAllCustomers() throws SQLException, ClassNotFoundException {
         ObservableList<String> obList = FXCollections.observableArrayList();
@@ -152,6 +218,39 @@ public class ViewOrdersFormController {
             e.printStackTrace();
         }
     }
+
+
+    public  void initialize() throws SQLException, ClassNotFoundException {
+        setDate();
+        setCellValues();
+        loadAllCustomers();
+
+
+    }
+
+
+
+    private void setDate() {
+        lblDate.setText(String.valueOf(LocalDate.now()));
+    }
+
+    private void setCellValues() {
+        colCustomerId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colCustomerName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colOrderId.setCellValueFactory(new PropertyValueFactory<>("oid"));
+        colDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
+    }
+
+   /* private void setCellValueFactory() {
+
+    }
+*/
+
+
+
 
 
 

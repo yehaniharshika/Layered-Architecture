@@ -6,7 +6,6 @@ import com.example.layeredarchitecture.model.CustomerDTO;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 public class CustomerDAOImpl  implements CustomerDAO {
 
@@ -23,7 +22,7 @@ public class CustomerDAOImpl  implements CustomerDAO {
     }
 
     @Override
-    public List<CustomerDTO> getAll() throws SQLException, ClassNotFoundException {
+    public ArrayList<CustomerDTO> getAll() throws SQLException, ClassNotFoundException {
         ResultSet rst = SQLUtil.execute("SELECT * FROM Customer");
        /* Connection connection = DBConnection.getDbConnection().getConnection();
         Statement stm = connection.createStatement();

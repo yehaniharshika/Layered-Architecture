@@ -1,5 +1,7 @@
 package com.example.layeredarchitecture.model;
 
+import java.math.BigDecimal;
+
 public class ViewOrderDetailDTO {
     private  String id;
     private  String name;
@@ -7,21 +9,49 @@ public class ViewOrderDetailDTO {
     private String date;
     private String itemcode;
     //private String description;
-    private String qty;
-    private String unitprice;
+    private int qty;
+    private BigDecimal unitprice;
 
     public ViewOrderDetailDTO(){
 
     }
 
-    public ViewOrderDetailDTO(String id, String name, String oid, String date, String itemCode, String qty, String unitprice){
+    public ViewOrderDetailDTO(String id, String name, String oid, String date, String itemcode, int qty, BigDecimal unitprice) {
         this.id = id;
-        this.name =  name;
+        this.name = name;
         this.oid = oid;
         this.date = date;
-        this.itemcode = itemCode;
+        this.itemcode = itemcode;
         this.qty = qty;
         this.unitprice = unitprice;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getOid() {
+        return oid;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getItemcode() {
+        return itemcode;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public BigDecimal getUnitprice() {
+        return unitprice;
     }
 
     public void setId(String id) {
@@ -44,48 +74,12 @@ public class ViewOrderDetailDTO {
         this.itemcode = itemcode;
     }
 
-   /* public void setDescription(String description) {
-        this.description = description;
-    }*/
-
-    public void setQty(String qty) {
+    public void setQty(int qty) {
         this.qty = qty;
     }
 
-    public void setUnitprice(String unitprice) {
+    public void setUnitprice(BigDecimal unitprice) {
         this.unitprice = unitprice;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getOid() {
-        return oid;
-    }
-
-   /* public String getDescription() {
-        return description;
-    }*/
-
-    public String getDate() {
-        return date;
-    }
-
-   public String getItemcode() {
-        return itemcode;
-    }
-
-    public String getQty() {
-        return qty;
-    }
-
-    public String getUnitprice() {
-        return unitprice;
     }
 
     @Override
@@ -96,8 +90,8 @@ public class ViewOrderDetailDTO {
                 ", oid='" + oid + '\'' +
                 ", date='" + date + '\'' +
                 ", itemcode='" + itemcode + '\'' +
-                ", qty='" + qty + '\'' +
-                ", unitprice='" + unitprice + '\'' +
+                ", qty=" + qty +
+                ", unitprice=" + unitprice +
                 '}';
     }
 }
