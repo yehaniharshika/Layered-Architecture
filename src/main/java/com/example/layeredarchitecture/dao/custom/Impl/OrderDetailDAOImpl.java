@@ -3,10 +3,13 @@ package com.example.layeredarchitecture.dao.custom.Impl;
 import com.example.layeredarchitecture.dao.SQLUtil;
 import com.example.layeredarchitecture.dao.custom.OrderDetailDAO;
 import com.example.layeredarchitecture.db.DBConnection;
+import com.example.layeredarchitecture.model.CustomerDTO;
+import com.example.layeredarchitecture.model.OrderDTO;
 import com.example.layeredarchitecture.model.OrderDetailDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -20,7 +23,8 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
 */
         for (OrderDetailDTO detail : orderDetails) {
 
-            Object execute = SQLUtil.execute("INSERT INTO OrderDetails (oid, itemCode, unitPrice, qty) VALUES (?,?,?,?)", orderId, detail.getItemCode(), detail.getUnitPrice(), detail.getQty());
+            Object execute = SQLUtil.execute("INSERT INTO OrderDetails (oid, itemCode, unitPrice, qty) VALUES (?,?,?,?)",
+                    orderId, detail.getItemCode(), detail.getUnitPrice(), detail.getQty());
 
             if (!(Boolean)execute) {
                 return false;
@@ -53,6 +57,25 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
         // return true;
         return true;
     }
+
+    /*public boolean saveAllCustomrOrderDetails(CustomerDTO dto, OrderDTO orderDTO,OrderDetailDTO orderdetails) throws SQLException, ClassNotFoundException {
+        Connection connection = DBConnection.getDbConnection().getConnection();
+        PreparedStatement pstm= connection.prepareStatement("SELECT c.id,c.name,o.oid,o.date,od.itemCode,od.qty,od.unitPrice FROM Customer c JOIN Orders o ON c.id=o.customerID JOIN OrderDetails od ON o.oid = od.oid;");
+
+
+        ResultSet resultSet = pstm.executeQuery();
+        if (resultSet.next()){
+            resultSet.getString(dto.getId()),
+            resultSet.getString(dto.getName()),
+            resultSet.getString(orderDTO.getOrderId()),
+            resultSet.getString(String.valueOf(orderDTO.getOrderDate())),
+            resultSet.getString(orderdetails.getItemCode()),
+            resultSet.getInt(orderdetails.getQty()),
+            resultSet.getBigDecimal(String.valueOf(orderdetails.getUnitPrice()))
+        }
+
+        return false;
+    }*/
 
 
     @Override
