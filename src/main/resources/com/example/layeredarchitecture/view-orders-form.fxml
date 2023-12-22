@@ -34,7 +34,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </ImageView>
-      <Label layoutX="105.0" layoutY="34.0" prefHeight="31.0" prefWidth="201.0" text="View Orders">
+      <Label layoutX="105.0" layoutY="34.0" prefHeight="31.0" prefWidth="201.0" text="Search Orders">
          <font>
             <Font name="Ubuntu Bold" size="27.0" />
          </font>

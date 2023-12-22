@@ -1,7 +1,7 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.custom.CustomerDAO;
-import com.example.layeredarchitecture.dao.custom.Impl.CustomerDAOImpl;
+import com.example.layeredarchitecture.Bo.CustomerBo;
+import com.example.layeredarchitecture.Bo.custom.Impl.CustomerBoImpl;
 import com.example.layeredarchitecture.model.CustomerDTO;
 import com.example.layeredarchitecture.view.tdm.CustomerTM;
 import com.jfoenix.controls.JFXButton;
@@ -34,7 +34,8 @@ public class ManageCustomersFormController {
     public TextField txtCustomerAddress;
     public TableView<CustomerTM> tblCustomers;
     public JFXButton btnAddNewCustomer;
-    CustomerDAO customerDAO = new CustomerDAOImpl(); //this is property Injection
+//    CustomerDAO customerDAO = new CustomerDAOImpl(); //this is property Injection
+    CustomerBo customerBo = new CustomerBoImpl(); //this is property injection
 
 
     public void initialize() {
@@ -68,8 +69,9 @@ public class ManageCustomersFormController {
         tblCustomers.getItems().clear();
         /*Get all customers*/
         try {
-
-            ArrayList<CustomerDTO> allCustomer = (ArrayList<CustomerDTO>) customerDAO.getAll();
+            //bo layer sita access
+           //CustomerBo customerBo = new CustomerBoImpl();
+           ArrayList<CustomerDTO> allCustomer = (ArrayList<CustomerDTO>) customerBo.getAllCustomer();
 
             for (CustomerDTO dto : allCustomer){
                  tblCustomers.getItems().add(new CustomerTM(
@@ -150,14 +152,15 @@ public class ManageCustomersFormController {
         if (btnSave.getText().equalsIgnoreCase("save")) {
             /*Save Customer*/
             try {
-
-                boolean isExit = customerDAO.exit(id);
+                //CustomerBo customerBo = new CustomerBoImpl();
+                boolean isExit =customerBo.exitCustomer(id);
                 if (isExit) {
                     //check id that already exist
                     new Alert(Alert.AlertType.ERROR, id + " already exists").show();
                 }
 
-                boolean isSaved =  customerDAO.save(dto);
+
+                boolean isSaved = customerBo.saveCustomer(dto);
                 if (isSaved){
                     tblCustomers.getItems().add(new CustomerTM(id, name, address));
                 }
@@ -179,12 +182,12 @@ public class ManageCustomersFormController {
         } else {
             /*Update customer*/
             try {
-
-                if (!customerDAO.exit(id)) {
+                //CustomerBo customerBo = new CustomerBoImpl();
+                if (!customerBo.exitCustomer(id)) {
                     new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
                 }
 
-                 boolean isUpdated = customerDAO.update(dto);
+                 boolean isUpdated = customerBo.updateCustomer(dto);
 
             } catch (SQLException e) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update the customer " + id + e.getMessage()).show();
@@ -214,12 +217,13 @@ public class ManageCustomersFormController {
         /*Delete Customer*/
         String id = tblCustomers.getSelectionModel().getSelectedItem().getId();
         try {
+            //CustomerBo customerBo = new CustomerBoImpl();
 
-            if (!customerDAO.exit(id)) {
+            if (!customerBo.exitCustomer(id)) {
                 new Alert(Alert.AlertType.ERROR, "There is no such customer associated with the id " + id).show();
             }
 
-            boolean isDeleted = customerDAO.delete(id);
+            boolean isDeleted = customerBo.deleteCustomer(id);
             if (isDeleted){
                 tblCustomers.getItems().remove(tblCustomers.getSelectionModel().getSelectedItem());
                 tblCustomers.getSelectionModel().clearSelection();
@@ -237,8 +241,8 @@ public class ManageCustomersFormController {
         String id = null;
 
         try {
-
-            id = customerDAO.generateNewId(id);
+            //CustomerBo customerBo = new CustomerBoImpl();
+            id = customerBo.generateNextCustomerId(id);
 
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Failed to generate a new id " + e.getMessage()).show();
